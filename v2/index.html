@@ -9,7 +9,8 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./responsive.css?v=20261011-2">
-  <script type="module" src="./app.mjs?v=20261011-2"></script>
+  <link rel="stylesheet" href="./prediction.css?v=20261011-3">
+  <script type="module" src="./app.mjs?v=20261011-3"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へ移動</a>
@@ -20,7 +21,7 @@
     <div class="sidebar-bottom"><div class="local-dot"></div><strong>この端末に保存</strong><p>記録は送信されません。<br>設定からバックアップできます。</p><a href="../" target="_blank" rel="noopener">旧サイトを開く <span aria-hidden="true">↗</span></a></div>
   </aside>
   <div class="workspace">
-    <header class="topbar"><a class="mobile-brand" href="#predict">Wide EV<span>予想と記録</span></a><div class="breadcrumb">RACE NOTE <span>/</span> <strong id="breadcrumb">レース予想</strong></div><div id="save-status" class="save-status" role="status">読み込み中</div></header>
+    <header class="topbar"><a class="mobile-brand" href="#predict">Wide EV<span>予想と記録</span></a><div class="breadcrumb">RACE NOTE <span>/</span> <strong id="breadcrumb">レース予想</strong></div><div class="header-controls"><div id="save-status" class="save-status" role="status">読み込み中</div><div id="prediction-header-actions" class="prediction-header-actions" hidden><button class="btn icon-only" data-action="new-race" aria-label="新しいレース">＋</button><button class="btn primary" data-action="save-race">保存</button></div></div></header>
     <div id="storage-warning" role="alert"></div>
     <main id="main" tabindex="-1"><div class="loading"><div class="loading-mark"></div><p>記録を読み込んでいます</p></div></main>
     <footer class="footer">Wide EV <span>従来の計算式を継承</span><a href="./docs/guide.html" target="_blank" rel="noopener">使い方・検証方法</a></footer>

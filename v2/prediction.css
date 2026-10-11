@@ -1,0 +1,99 @@
+/* Compact prediction entry, matching the original horse / rate / normalized flow. */
+body[data-page=predict] main { padding-top: 18px; }
+body[data-page=predict] .topbar { position: sticky; top: 0; z-index: 25; }
+.header-controls, .prediction-header-actions { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.prediction-header-actions .btn { min-height: 36px; padding: 6px 14px; }
+.prediction-header-actions .icon-only { width: 36px; padding: 4px; }
+.prediction-shell [hidden], .prediction-header-actions[hidden] { display: none; }
+.prediction-shell { width: 100%; max-width: 640px; min-width: 0; margin: 0 auto; }
+.prediction-race { display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px; border: 1px solid #d4e1d6; border-radius: 9px; background: #fff; text-align: left; }
+#prediction-race-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 650; color: var(--green); }
+#prediction-race-date { flex-shrink: 0; font-size: 11px; color: #61736a; }
+.race-edit-label { font-size: 10px; color: var(--green2); flex-shrink: 0; }
+.prediction-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 10px 2px 6px; font-size: 11px; color: #637169; }
+.prediction-settings > span { min-width: 0; overflow-wrap: anywhere; }
+.prediction-settings strong { margin-left: 3px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.prediction-settings a { margin-left: auto; text-decoration: underline; text-underline-offset: 3px; }
+.prediction-section-title { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 18px 0 9px; }
+.prediction-section-title h1, .prediction-section-title h2 { margin: 0; font-size: 15px; line-height: 1.5; letter-spacing: 0; font-weight: 700; }
+.prediction-section-title small { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--muted); }
+.prediction-section-title .count-control { gap: 8px; }
+.prediction-section-title .count-control .btn { width: 34px; min-height: 34px; font-size: 16px; }
+.prediction-table-box { width: 100%; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.entry-table, .wide-table { width: 100%; min-width: 0; max-width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.entry-table .horse-column { width: 48px; }
+.entry-table .normalized-column { width: 76px; }
+.entry-table .margin-column { width: 80px; }
+.entry-table th, .entry-table td, .wide-table th, .wide-table td { padding: 5px; text-align: center; border-bottom: 1px solid #edf0eb; }
+.entry-table th:first-child, .entry-table td:first-child, .entry-table th:last-child, .entry-table td:last-child,
+.wide-table th:first-child, .wide-table td:first-child, .wide-table th:last-child, .wide-table td:last-child { padding-inline: 5px; }
+.entry-table th, .wide-table th { padding-block: 9px; background: #f2f6ef; color: #657768; font-size: 11px; font-weight: 600; line-height: 1.4; letter-spacing: 0; white-space: normal; }
+.entry-table tbody tr:last-child td, .wide-table tbody tr:last-child td { border-bottom: 0; }
+.entry-table .axis-selected td { background: #eef6e9; }
+.horse-axis-button { width: 36px; height: 40px; padding: 0; border-radius: 7px; background: #f0f3ee; color: #526358; font-size: 15px; font-weight: 650; }
+.axis-selected .horse-axis-button { background: var(--green); color: #fff; }
+.entry-table input { display: block; width: 100%; min-width: 0; height: 40px; padding: 6px 10px; border-radius: 6px; text-align: right; font-size: 16px; font-weight: 550; }
+.axis-selected input { border-color: #b5cdb1; }
+.entry-normalized { font-size: 13px; font-weight: 650; color: var(--green); }
+.entry-normalized.negative { color: var(--red); }
+.prediction-totals { display: flex; justify-content: space-between; gap: 8px; padding: 8px 3px 0; font-size: 10px; color: #7a877d; }
+.prediction-totals b { margin-left: 4px; color: #435d49; font-size: 11px; font-variant-numeric: tabular-nums; }
+.prediction-hint { margin: 8px 0 12px; color: #7a877d; font-size: 11px; line-height: 1.7; }
+.prediction-hint strong { font-weight: 550; color: #536d5c; }
+.prediction-axis { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px 12px; padding: 10px 12px; margin-bottom: 9px; border-radius: 8px; color: #fff; background: var(--green); font-size: 12px; }
+.prediction-axis > span { font-size: 11px; color: #d0e3d5; }
+.prediction-axis b { margin-left: 5px; color: #fff; font-size: 14px; font-variant-numeric: tabular-nums; }
+.prediction-empty { padding: 23px 12px; border: 1px dashed #cad7c7; border-radius: 9px; text-align: center; font-size: 12px; color: #778674; line-height: 1.9; }
+.wide-table .partner-column { width: 38px; }
+.wide-table .wide-probability-column { width: 20%; }
+.wide-table .required-column { width: 21%; }
+.wide-table .odds-column { width: 24%; }
+.wide-table td { height: 48px; padding-inline: 4px; }
+.wide-table th { font-size: 10px; padding-inline: 3px; }
+.partner-button { width: 28px; height: 36px; padding: 0; background: transparent; color: #536d5c; font-size: 13px; font-weight: 650; border-radius: 6px; }
+.wide-value-button { width: 100%; min-width: 0; height: 36px; padding: 0; background: transparent; color: #58695b; font-size: 12px; border-radius: 6px; }
+.wide-table .wide-odds-input { display: block; width: 100%; min-width: 0; height: 38px; padding: 5px 3px; border-radius: 6px; text-align: center; font-size: 16px; }
+.wide-ev-button { display: block; width: 100%; min-width: 0; padding: 8px 2px; border-radius: 6px; background: #f0f3ed; color: #75816f; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.wide-ev-button.recommended { background: var(--green); color: #fff; }
+.wide-table .positive-ev td { background: #f4f9ef; }
+.wide-table .pair-selected .partner-button { background: var(--green); color: #fff; }
+.prediction-save { padding: 14px; margin-top: 20px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.prediction-save .decision-options { gap: 6px; margin: 0 0 12px; }
+.prediction-save .choice { flex: 1; justify-content: center; gap: 5px; padding: 9px 5px; white-space: nowrap; }
+.prediction-save .choice input { margin: 0; }
+.prediction-save .prediction-hint { margin: 8px 0 0; }
+.prediction-purchase-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.prediction-extra { margin-top: 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff; }
+.prediction-extra > summary { padding: 12px; font-size: 12px; color: #607563; cursor: pointer; }
+.prediction-extra-body { padding: 0 12px 12px; }
+.prediction-extra-body .field, .prediction-extra-body textarea { width: 100%; min-width: 0; }
+.prediction-horse-meta-labels, .prediction-horse-meta { display: grid; grid-template-columns: 44px minmax(0, 1fr) 104px; align-items: center; gap: 6px; margin-top: 7px; }
+.prediction-horse-meta-labels { color: var(--muted); font-size: 10px; }
+.prediction-horse-meta input, .prediction-horse-meta select { width: 100%; min-width: 0; padding: 8px 5px; font-size: 13px; }
+.prediction-horse-meta input:first-child { text-align: center; }
+.prediction-race-editor { display: grid; gap: 14px; }
+.prediction-race-editor > details { color: #657768; font-size: 11px; }
+.prediction-race-editor summary { cursor: pointer; }
+.prediction-race-editor details .prediction-race-editor { padding-top: 12px; }
+.pair-ev-hero { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 16px 0; padding: 14px 18px; border-radius: 10px; background: #f0f3ed; color: #627459; }
+.pair-ev-hero span { font-size: 12px; }
+.pair-ev-hero strong { font-size: 30px; font-variant-numeric: tabular-nums; }
+.pair-ev-hero.recommended { background: var(--green); color: #fff; }
+
+@media (max-width: 720px) {
+  body[data-page=predict] main { padding: 14px 12px 25px; }
+  body[data-page=predict] .topbar { height: 58px; padding-inline: 12px; }
+  body[data-page=predict] .mobile-brand { font-size: 18px; white-space: nowrap; }
+  body[data-page=predict] .save-status { font-size: 9px; gap: 4px; white-space: nowrap; }
+  .header-controls, .prediction-header-actions { gap: 7px; }
+  .prediction-header-actions .btn { padding-inline: 11px; }
+  .prediction-header-actions .icon-only { padding: 4px; width: 33px; }
+  .entry-table .horse-column { width: 46px; }
+  .entry-table .normalized-column { width: 70px; }
+  .entry-table .margin-column { width: 75px; }
+  .prediction-shell .field input, .prediction-shell .field select, .prediction-shell textarea,
+  .prediction-horse-meta input, .prediction-horse-meta select,
+  .prediction-race-editor input, .prediction-race-editor select, #sheet-stake { font-size: 16px; }
+  .prediction-shell .field select { padding-inline: 7px; }
+  body[data-page=predict] dialog { padding: 20px; width: calc(100% - 24px); }
+}

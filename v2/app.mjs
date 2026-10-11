@@ -40,48 +40,88 @@ function navigate(next) { if (location.hash === `#${next}`) { page = next; rende
 function render() {
   const active = document.activeElement, focus = active?.id, start = active?.selectionStart, end = active?.selectionEnd;
   const scrolls = [...document.querySelectorAll('.table-scroll')].map(el => el.scrollLeft);
-  $('breadcrumb').textContent = paths[page][0];
+  const details = [...$('main').querySelectorAll('details[data-preserve-open]')].map(el => [el.id, el.open]);
+  document.body.dataset.page = page;
+  $('breadcrumb').textContent = page==='predict'?'EV計算':paths[page][0];
+  $('prediction-header-actions').hidden = page!=='predict';
+  document.querySelector('.mobile-brand').innerHTML = page==='predict'?'EV計算':'Wide EV<span>予想と記録</span>';
   $('navigation').innerHTML = Object.entries(paths).map(([id,[label,path]]) => `<a href="#${id}" class="nav-link${page===id?' active':''}"${page===id?' aria-current="page"':''}>${icon(path)}<span>${label}</span>${id==='history'&&state.races.length?`<small>${state.races.length}</small>`:''}</a>`).join('');
   $('mobile-navigation').innerHTML = Object.entries(paths).map(([id,[label,path]]) => `<a href="#${id}" class="${page===id?'active':''}"${page===id?' aria-current="page"':''}>${icon(path)}<span>${label.replace('・保存','').replace('レース','')}</span></a>`).join('');
   $('main').innerHTML = ({predict:renderPredict,history:renderHistory,analysis:renderAnalysis,calibration:renderCalibration,settings:renderSettings}[page])();
+  for (const [id, open] of details) if ($(id)) $(id).open = open;
   if (focus && $(focus)) { $(focus).focus({preventScroll:true}); if (typeof start === 'number') { try { $(focus).setSelectionRange(start,end); } catch {} } }
   [...document.querySelectorAll('.table-scroll')].forEach((el,i) => { el.scrollLeft = scrolls[i] || 0; });
 }
 function renderPredict() {
-  const d = state.draft, p = projectDraft(d,state.settings,bankroll(state),state.model), axis = d.horses[p.axis], chosen = p.pairs.find(q=>q.partnerId===d.selectedPartner), total = p.raw.reduce((a,b)=>a+b,0)+p.margins.reduce((a,b)=>a+b,0), valid = probabilitiesValid(p.decision);
-  return header('PREDICT & RECORD','予想を、確かめられる記録に。','全馬の見積もりから、軸1頭のワイドを検討します。',`<button class="btn" data-action="new-race">＋ 新しいレース</button>`)+`
-  ${d.parentRaceId?'<div class="info-box warning mb">保存済み予想の改訂中です。前の見積もりも履歴に残り、分析では最新の事前予想を1件として扱います。</div>':''}
-  <div class="grid-two"><div>
-  <section class="panel">${panelTitle('01','レース情報',badge(d.timing==='pre'?'事前の予想':'事後の記録',d.timing==='pre'?'green':'gold'))}
-  <div class="panel-body"><div class="race-meta">
-    <label class="field">レース名 <span class="required">必須</span><input id="race-name" data-field="name" value="${esc(d.name)}" placeholder="例：東京11R 毎日王冠" maxlength="100" autocomplete="off"></label>
-    <label class="field">レース日<input id="race-date" data-field="date" type="date" value="${esc(d.date)}"></label>
-    <label class="field">発走時刻 <span class="muted">任意・日本時間</span><input id="race-time" data-field="time" type="time" value="${esc(d.time)}"></label>
-  </div><div class="meta-extra">
-    <label class="field">競馬場<input id="race-course" data-field="course" value="${esc(d.course)}" placeholder="東京" maxlength="30"></label>
-    <label class="field">条件・距離<input id="race-distance" data-field="distance" value="${esc(d.distance)}" placeholder="芝1800m" maxlength="50"></label>
-    <label class="field">記録区分<select id="race-timing" data-field="timing">${option('pre','レース前の予想',d.timing)}${option('retrospective','事後の記録（分析対象外）',d.timing)}</select></label>
-  </div></div></section>
-  <section class="panel mt">${panelTitle('02','全馬の複勝率',`<div class="count-control"><button class="btn icon-only" data-action="remove-horse" aria-label="1頭減らす"${d.horses.length<=4?' disabled':''}>−</button><span>${d.horses.length}頭</span><button class="btn icon-only" data-action="add-horse" aria-label="1頭増やす"${d.horses.length>=18?' disabled':''}>＋</button></div>`)}
-  <div class="mode-row"><label>入力方式 <select id="input-mode" data-field="mode">${option('legacy','従来どおりに入力',d.mode)}${option('split','見積もりと保守上乗せを分ける',d.mode)}</select></label>${badge(p.applied?'統計補正 適用中':'従来計算',p.applied?'green':'')}</div>
-  <p class="mode-note">${d.mode==='split'?'「見積もり」に素直な評価を、「保守上乗せ」に買わない馬などへの加算ポイントを入力。統計補正は見積もりだけに学習させます。':'これまでと同じ複勝率を入力してください。保守的な上乗せを含めた値でも、旧サイトと同じ計算になります。'}</p>
-  <div class="table-scroll"><table class="horse-table${d.mode==='split'?' with-margin':''}"><thead><tr><th>軸</th><th>馬番・馬名</th><th class="numeric">${d.mode==='split'?'見積もり':'複勝率'}</th>${d.mode==='split'?'<th class="numeric">保守上乗せ</th>':''}<th class="numeric">正規化後</th><th>扱い</th></tr></thead><tbody>
-  ${d.horses.map((h,i)=>`<tr class="${h.id===d.axisId?'axis-row':''}"><td class="axis-cell" data-label="軸"><input id="axis-${h.id}" type="radio" name="axis" data-axis="${h.id}" aria-label="${h.number}番を軸にする"${checked(h.id===d.axisId)}></td><td class="horse-cell"><div class="horse-name"><input id="number-${h.id}" class="horse-no" data-horse="${h.id}" data-key="number" type="number" min="1" max="18" value="${h.number}" aria-label="馬番"><input id="name-${h.id}" data-horse="${h.id}" data-key="name" value="${esc(h.name)}" placeholder="馬名（任意）" maxlength="60" aria-label="${h.number}番の馬名"></div></td><td class="numeric probability-cell" data-label="${d.mode==='split'?'見積もり':'複勝率'}"><span class="percent-unit"><input id="raw-${h.id}" class="prob-input" inputmode="decimal" data-horse="${h.id}" data-key="raw" value="${esc(h.raw)}" placeholder="0" aria-label="${h.number}番の複勝率"><span>%</span></span></td>${d.mode==='split'?`<td class="numeric margin-cell" data-label="保守上乗せ"><span class="percent-unit"><input id="margin-${h.id}" class="prob-input" inputmode="decimal" data-horse="${h.id}" data-key="margin" value="${esc(h.margin)}" placeholder="0" aria-label="${h.number}番の保守上乗せ"><span>pt</span></span></td>`:''}<td class="numeric norm-cell norm-val${p.decision[i]>1?' negative':''}" data-label="正規化後">${pct(p.decision[i])}</td><td class="role-cell" data-label="扱い"><select id="role-${h.id}" class="role-select" data-horse="${h.id}" data-key="role" aria-label="${h.number}番の扱い">${option('observe','未指定',h.role)}${option('candidate','購入候補',h.role)}${option('exclude','買わない',h.role)}</select></td></tr>`).join('')}
-  </tbody></table></div><div class="table-foot"><span>入力合計 <strong>${pct(total)}</strong></span><span class="total">正規化後 <strong>${pct(p.decision.reduce((a,b)=>a+b,0))}</strong></span></div>
-  ${!valid&&total>0?'<div class="info-box warning">正規化後に100%を超える馬があります。計算式はそのまま表示していますが、この状態では確定保存できません。</div>':''}
-  ${d.horses.length<8?'<div class="info-box warning">8頭未満でも従来の合計300%で計算します。複勝の対象着順が異なるため、精度分析・自動補正の対象には含めません。</div>':''}
-  ${p.modelNote?`<div class="info-box">${esc(p.modelNote)}</div>`:''}</section>
-  <section class="panel mt commit-panel">${panelTitle('03','判断を残す')}
-  <div class="panel-body"><div class="decision-options">${[['watch','検討中'],['skip','見送り'],['bet','購入する']].map(([value,label])=>`<label class="choice${d.decision===value?' active':''}"><input type="radio" name="decision" data-field="decision" value="${value}"${checked(d.decision===value)}>${label}</label>`).join('')}</div>
-  ${d.decision==='bet'?`<div class="inline-fields mt"><label class="field">購入する相手<select id="selected-partner" data-field="selectedPartner"><option value="">相手を選択</option>${p.pairs.map(q=>option(q.partnerId,horseLabel(d.horses[q.partnerIndex]),d.selectedPartner)).join('')}</select></label><label class="field">実購入額（円）<input id="actual-stake" data-field="stake" inputmode="numeric" value="${esc(d.stake)}" placeholder="100円単位"></label></div><p class="small muted">${chosen?`${esc(horseLabel(axis))} − ${esc(horseLabel(d.horses[chosen.partnerIndex]))} ／ 記録オッズ ${num(chosen.odds,1)}倍`:'右の一覧から相手とオッズを選んでください。'} 実購入額を記録しても、馬券は自動購入されません。</p>`:''}
-  <label class="field notes-label">予想メモ<textarea id="race-notes" data-field="notes" rows="3" maxlength="5000" placeholder="能力評価、人気を落としている理由、見送った理由など">${esc(d.notes)}</textarea></label>
-  <div class="commit-actions"><p>下書きは自動保存。確定時点の全馬の数値とオッズを残します。</p><button class="btn primary" data-action="save-race">${d.parentRaceId?'改訂した予想を保存':'予想を確定して保存'} <span aria-hidden="true">→</span></button></div></div></section>
-  </div><aside class="sticky-calc"><section class="panel">
-  <div class="calc-head"><div class="eyebrow">WIDE EXPECTED VALUE</div><div class="calc-title"><h2>ワイド期待値</h2>${badge(`EV ≥ ${num(state.settings.evThreshold,2)}`,'green')}</div><div class="calc-axis"><span>軸馬</span><strong>${esc(horseLabel(axis))}</strong><div class="big-num">${axis?pct(p.decision[p.axis]):'—'}</div></div></div>
-  <div class="calc-settings"><span>資金 <strong>${yen(bankroll(state))}</strong></span><span>ケリー <strong>${state.settings.kellyFraction===1?'フル':state.settings.kellyFraction===.5?'½':'¼'}</strong></span><a href="#settings">変更</a></div>
-  ${p.axis<0?'<div class="empty-inline"><strong>軸馬を選んでください</strong><p>左の表で軸を選ぶと、全相手の的中確率と必要オッズが表示されます。</p></div>':`<div class="table-scroll"><table class="calc-table"><thead><tr><th>相手</th><th class="numeric">的中率</th><th class="numeric">必要<br>オッズ</th><th class="numeric">現在<br>オッズ</th><th class="numeric">EV</th></tr></thead><tbody>${p.pairs.map(q=>`<tr class="pair-row${q.partnerId===d.selectedPartner?' selected':''}"><td class="pair-cell"><button class="pair-label" data-action="select-pair" data-id="${q.partnerId}" aria-label="${esc(horseLabel(d.horses[q.partnerIndex]))}を選択">${d.horses[q.partnerIndex].number}<span>${esc(d.horses[q.partnerIndex].name||'番')}</span></button></td><td class="numeric" data-label="推定的中率">${pct(q.probability)}</td><td class="numeric" data-label="必要オッズ">${num(q.required,1)}</td><td class="numeric" data-label="現在オッズ"><input id="odds-${q.partnerId}" class="odds-input" inputmode="decimal" data-odds="${q.partnerId}" value="${esc(q.oddsText)}" placeholder="—" aria-label="${d.horses[q.partnerIndex].number}番とのワイドオッズ"></td><td class="numeric" data-label="期待値（EV）"><span class="ev-pill${q.recommended?' positive':''}">${num(q.ev)}</span></td></tr>`).join('')}</tbody></table></div>`}
-  ${chosen?`<div class="pair-detail"><h3>${axis.number} − ${d.horses[chosen.partnerIndex].number} の検討</h3><div class="detail-line"><span>推定的中確率</span><strong>${pct(chosen.probability,2)}</strong></div><div class="detail-line"><span>必要オッズ</span><strong>${num(chosen.required,2)}倍</strong></div><div class="detail-line"><span>期待値</span><strong>${num(chosen.ev,3)}</strong></div><div class="stake-hero"><span>ケリー基準の購入額</span><strong>${yen(chosen.amount)}</strong><small>資金の${pct(chosen.kelly,2)}・100円単位</small></div><button class="btn soft full-width" data-action="use-stake">この組み合わせを購入記録に使う</button></div>`:'<p class="mode-note">相手の馬番を押すと、購入額の目安を確認できます。オッズに幅がある場合は、採用する値を入力してください。</p>'}
-  </section><div class="sidebar-stat"><strong>条件に合わなければ、見送り。</strong><p>一強の軸馬と相手1頭を検討するための計算です。購入の判断はご自身で行います。</p></div></aside></div>`;
+  const d=state.draft,p=projectDraft(d,state.settings,bankroll(state),state.model),axis=d.horses[p.axis],split=d.mode==='split';
+  return `<div class="prediction-shell">
+  ${d.parentRaceId?'<div class="info-box warning mb">保存済み予想の改訂中です。前の数値も履歴に残ります。</div>':''}
+  <button class="prediction-race" data-action="edit-race"><span id="prediction-race-name">${esc(d.name||'レース名を入力')}</span><time id="prediction-race-date">${esc(d.date)}</time><span class="race-edit-label">編集</span></button>
+  <div class="prediction-settings"><span>資金 <strong>${yen(bankroll(state))}</strong></span><span>EV <strong>≥ ${num(state.settings.evThreshold,2)}</strong></span><a href="#settings">設定</a></div>
+  <div class="prediction-section-title"><h1>出走馬 <small>${d.horses.length}頭</small></h1><div class="count-control"><button class="btn icon-only" data-action="remove-horse" aria-label="1頭減らす"${d.horses.length<=4?' disabled':''}>−</button><button class="btn icon-only" data-action="add-horse" aria-label="1頭増やす"${d.horses.length>=18?' disabled':''}>＋</button></div></div>
+  <div class="prediction-table-box"><table class="entry-table${split?' split-input':''}"><colgroup><col class="horse-column"><col>${split?'<col class="margin-column">':''}<col class="normalized-column"></colgroup><thead><tr><th>馬番</th><th>${split?'見積もり':'予測複勝率'}（%）</th>${split?'<th>保守上乗せ<br>（pt）</th>':''}<th>正規化</th></tr></thead><tbody>
+  ${d.horses.map((h,i)=>`<tr id="entry-row-${h.id}" class="${h.id===d.axisId?'axis-selected':''}"><td><button id="axis-${h.id}" class="horse-axis-button" data-action="select-axis" data-id="${h.id}" aria-label="${h.number}番を軸にする" aria-pressed="${h.id===d.axisId}" title="${esc(horseLabel(h))}">${h.number}</button></td><td><input id="raw-${h.id}" class="entry-probability" inputmode="decimal" enterkeyhint="next" autocomplete="off" data-horse="${h.id}" data-key="raw" value="${esc(h.raw)}" placeholder="0.0" aria-label="${h.number}番の予測複勝率"></td>${split?`<td><input id="margin-${h.id}" class="entry-margin" inputmode="decimal" autocomplete="off" data-horse="${h.id}" data-key="margin" value="${esc(h.margin)}" placeholder="0" aria-label="${h.number}番の保守上乗せ"></td>`:''}<td><span id="norm-${h.id}" class="entry-normalized${p.decision[i]>1?' negative':''}">${pct(p.decision[i])}</span></td></tr>`).join('')}
+  </tbody></table></div><div class="prediction-totals"><span>入力合計 <b id="prediction-input-total">${pct(p.raw.reduce((a,b)=>a+b,0)+p.margins.reduce((a,b)=>a+b,0))}</b></span><span>正規化後 <b id="prediction-normalized-total">${pct(p.decision.reduce((a,b)=>a+b,0))}</b></span></div>
+  <p class="prediction-hint">複勝率を入力し、<strong>馬番をタップして軸馬を選択</strong>してください。</p>
+  <p id="prediction-invalid" class="info-box warning"${probabilitiesValid(p.decision)||!p.raw.some(x=>x>0)?' hidden':''}>正規化後に100%を超える馬があります。確定保存する前に入力を見直してください。</p>
+  ${d.horses.length<8?'<p class="info-box warning">8頭未満は従来の合計300%で計算し、精度分析・補正の対象から除外します。</p>':''}
+  <p id="prediction-model-note" class="prediction-hint"${p.modelNote?'':' hidden'}>${esc(p.modelNote)}</p>
+  <div class="prediction-section-title"><h2>EV計算結果</h2><span id="prediction-model-badge" class="badge green"${p.applied?'':' hidden'}>補正適用中</span></div>
+  ${p.axis<0?'<div class="prediction-empty">馬番をタップして軸を選ぶと、<br>相手ごとのワイド期待値を表示します。</div>':`
+  <div class="prediction-axis"><strong id="prediction-axis-name">軸：${axis.number}番</strong><span>正規化複勝率 <b id="prediction-axis-rate">${pct(p.decision[p.axis])}</b></span></div>
+  <div class="prediction-table-box"><table class="wide-table"><colgroup><col class="partner-column"><col class="wide-probability-column"><col class="required-column"><col class="odds-column"><col></colgroup><thead><tr><th>相手</th><th>的中確率</th><th>必要オッズ</th><th>実オッズ</th><th>EV</th></tr></thead><tbody>
+  ${p.pairs.map(q=>{const h=d.horses[q.partnerIndex];return `<tr id="wide-row-${h.id}" class="${q.recommended?'positive-ev':''}${h.id===d.selectedPartner?' pair-selected':''}"><td><button id="partner-${h.id}" class="partner-button" data-action="select-pair" data-id="${h.id}" aria-label="${h.number}番とのワイド詳細" title="${esc(horseLabel(h))}">${h.number}</button></td><td><button id="wide-prob-${h.id}" class="wide-value-button" data-action="select-pair" data-id="${h.id}" aria-label="${h.number}番との的中確率と購入詳細">${pct(q.probability)}</button></td><td id="required-${h.id}">${num(q.required,1)}</td><td><input id="odds-${h.id}" class="wide-odds-input" inputmode="decimal" enterkeyhint="next" autocomplete="off" data-odds="${h.id}" value="${esc(q.oddsText)}" placeholder="—" aria-label="${h.number}番とのワイドオッズ"></td><td><button id="ev-${h.id}" class="wide-ev-button${q.recommended?' recommended':''}" data-action="select-pair" data-id="${h.id}" aria-label="${h.number}番とのEVと購入詳細">${num(q.ev)}</button></td></tr>`;}).join('')}
+  </tbody></table></div><p class="prediction-hint">実オッズを入力するとEVを計算します。<strong>EVをタップ</strong>すると購入額を確認・記録できます。</p>`}
+  <section class="prediction-save"><div class="decision-options">${[['watch','検討中'],['skip','見送り'],['bet','購入']].map(([v,t])=>`<label class="choice"><input type="radio" name="decision" data-field="decision" value="${v}"${checked(d.decision===v)}>${t}</label>`).join('')}</div>
+  ${d.decision==='bet'?`<div class="prediction-purchase-fields"><label class="field">購入する相手<select id="selected-partner" data-field="selectedPartner"><option value="">相手を選択</option>${p.pairs.map(q=>option(q.partnerId,horseLabel(d.horses[q.partnerIndex]),d.selectedPartner)).join('')}</select></label><label class="field">実購入額（円）<input id="actual-stake" data-field="stake" inputmode="numeric" value="${esc(d.stake)}" placeholder="100円単位"></label></div>`:''}
+  <button class="btn primary full-width" data-action="save-race">${d.parentRaceId?'改訂した予想を保存':'予想を保存'}</button><p class="prediction-hint">全馬の予想を保存します。結果は「記録」から後で入力できます。</p></section>
+  <details id="prediction-options" class="prediction-extra" data-preserve-open><summary>入力方法・馬名・候補区分</summary><div class="prediction-extra-body"><label class="field">入力方法<select id="input-mode" data-field="mode">${option('legacy','従来どおりに入力',d.mode)}${option('split','見積もり＋保守上乗せ',d.mode)}</select></label><p class="prediction-hint">${split?'見積もりと、買わない馬などへの保守上乗せを分けて入力します。補正の学習は見積もりだけに行います。':'これまでと同じ複勝率を入力します。自動補正の学習に使うときは、見積もりと保守上乗せを分けてください。'}</p>
+  <div class="prediction-horse-meta-labels"><span>馬番</span><span>馬名（任意）</span><span>扱い</span></div>${d.horses.map(h=>`<div class="prediction-horse-meta"><input id="number-${h.id}" data-horse="${h.id}" data-key="number" inputmode="numeric" value="${h.number}" aria-label="馬番"><input id="name-${h.id}" data-horse="${h.id}" data-key="name" value="${esc(h.name)}" placeholder="馬名" maxlength="60" aria-label="${h.number}番の馬名"><select id="role-${h.id}" data-horse="${h.id}" data-key="role" aria-label="${h.number}番の扱い">${option('observe','未指定',h.role)}${option('candidate','購入候補',h.role)}${option('exclude','買わない',h.role)}</select></div>`).join('')}
+  </div></details><details id="prediction-notes" class="prediction-extra" data-preserve-open><summary>予想メモ</summary><div class="prediction-extra-body"><textarea id="race-notes" data-field="notes" rows="3" maxlength="5000" placeholder="能力評価や見送りの理由など" aria-label="予想メモ">${esc(d.notes)}</textarea></div></details></div>`;
+}
+
+function refreshPrediction() {
+  if(page!=='predict'||!$('prediction-race-name')){render();return;}
+  const d=state.draft,p=projectDraft(d,state.settings,bankroll(state),state.model);
+  const set=(id,value)=>{const el=$(id);if(el)el.textContent=value;};
+  set('prediction-race-name',d.name||'レース名を入力');set('prediction-race-date',d.date);
+  set('prediction-input-total',pct(p.raw.reduce((a,b)=>a+b,0)+p.margins.reduce((a,b)=>a+b,0)));
+  set('prediction-normalized-total',pct(p.decision.reduce((a,b)=>a+b,0)));
+  for(const [i,h] of d.horses.entries()){
+    set(`axis-${h.id}`,h.number);set(`norm-${h.id}`,pct(p.decision[i]));
+    $(`norm-${h.id}`)?.classList.toggle('negative',p.decision[i]>1);
+    $(`axis-${h.id}`)?.setAttribute('aria-label',`${h.number}番を軸にする`);
+    $(`axis-${h.id}`)?.setAttribute('title',horseLabel(h));
+    $(`raw-${h.id}`)?.setAttribute('aria-label',`${h.number}番の予測複勝率`);
+  }
+  if(p.axis>=0){set('prediction-axis-name',`軸：${d.horses[p.axis].number}番`);set('prediction-axis-rate',pct(p.decision[p.axis]));}
+  for(const q of p.pairs){
+    const h=d.horses[q.partnerIndex];
+    set(`partner-${h.id}`,h.number);set(`wide-prob-${h.id}`,pct(q.probability));set(`required-${h.id}`,num(q.required,1));set(`ev-${h.id}`,num(q.ev));
+    $(`wide-row-${h.id}`)?.classList.toggle('positive-ev',q.recommended);
+    $(`wide-row-${h.id}`)?.classList.toggle('pair-selected',h.id===d.selectedPartner);
+    $(`ev-${h.id}`)?.classList.toggle('recommended',q.recommended);
+    $(`partner-${h.id}`)?.setAttribute('aria-label',`${h.number}番とのワイド詳細`);
+    $(`partner-${h.id}`)?.setAttribute('title',horseLabel(h));
+    $(`wide-prob-${h.id}`)?.setAttribute('aria-label',`${h.number}番との的中確率と購入詳細`);
+    $(`ev-${h.id}`)?.setAttribute('aria-label',`${h.number}番とのEVと購入詳細`);
+    $(`odds-${h.id}`)?.setAttribute('aria-label',`${h.number}番とのワイドオッズ`);
+    const select=$('selected-partner');
+    if(select){const option=[...select.options].find(o=>o.value===h.id);if(option)option.textContent=horseLabel(h);}
+  }
+  $('prediction-invalid').hidden=probabilitiesValid(p.decision)||!p.raw.some(x=>x>0);
+  $('prediction-model-note').hidden=!p.modelNote;set('prediction-model-note',p.modelNote);
+  $('prediction-model-badge').hidden=!p.applied;
+}
+function showRaceEditor(saveAfter=false) {
+  const d=state.draft;
+  dialog('レース情報',`<div class="prediction-race-editor"><label class="field">レース名<input id="race-name" data-field="name" value="${esc(d.name)}" placeholder="例：東京11R" maxlength="100"></label><label class="field">レース日<input id="race-date" data-field="date" type="date" value="${esc(d.date)}"></label><label class="field">発走時刻（任意・日本時間）<input id="race-time" data-field="time" type="time" value="${esc(d.time)}"></label><label class="field">記録区分<select id="race-timing" data-field="timing">${option('pre','レース前の予想',d.timing)}${option('retrospective','事後の記録（分析対象外）',d.timing)}</select></label><details><summary>競馬場・距離も入力する</summary><div class="prediction-race-editor"><label class="field">競馬場<input id="race-course" data-field="course" value="${esc(d.course)}" maxlength="30"></label><label class="field">条件・距離<input id="race-distance" data-field="distance" value="${esc(d.distance)}" maxlength="50"></label></div></details></div>`,`<button class="btn primary" data-action="${saveAfter?'finish-race-editor':'close-dialog'}">${saveAfter?'この内容で予想を保存':'設定する'}</button>`);
+  if(!d.name)$('race-name').focus();
+}
+function showPairDetails(id) {
+  const d=state.draft,p=projectDraft(d,state.settings,bankroll(state),state.model),q=p.pairs.find(q=>q.partnerId===id);if(!q)return;
+  const a=d.horses[p.axis],h=d.horses[q.partnerIndex],stake=d.selectedPartner===id&&d.decision==='bet'&&d.stake!==''?d.stake:String(q.amount);
+  dialog(`${a.number}番 − ${h.number}番 ワイド`,`<div class="pair-ev-hero${q.recommended?' recommended':''}"><span>期待値（EV）</span><strong>${num(q.ev,3)}</strong></div><div class="detail-line"><span>推定的中確率</span><strong>${pct(q.probability,2)}</strong></div><div class="detail-line"><span>必要オッズ</span><strong>${num(q.required,2)}倍</strong></div><div class="detail-line"><span>実オッズ</span><strong>${num(q.odds,1)}倍</strong></div><div class="detail-line"><span>ケリー基準の購入額</span><strong>${yen(q.amount)}</strong></div><p class="small muted">${state.settings.kellyFraction===.5?'½':state.settings.kellyFraction===.25?'¼':'フル'}ケリー・資金の${pct(q.kelly,2)}・100円単位</p><label class="field">実購入額（円）<input id="sheet-stake" inputmode="numeric" value="${esc(stake)}" placeholder="100円単位"></label><p class="small muted">全馬の予想と、この組み合わせの購入内容を保存します。</p>`,`<button class="btn" data-action="close-dialog">閉じる</button><button class="btn primary" data-action="record-pair" data-id="${h.id}"${q.odds>0?'':' disabled'}>購入を記録して保存</button>`);
 }
 
 function renderHistory() {
@@ -171,17 +211,24 @@ async function validateModel() {
 async function action(name,id,el) {
   if(committing)return;
   if(name==='close-dialog'){closeDialog();return;}
-  if(name==='new-race'){if(state.draft.horses.some(h=>h.raw!=='')||state.draft.name){confirmAction('新しいレースを入力','現在の下書きを新しいレースに切り替えます。確定保存した予想は残ります。','confirm-new');}else{state.draft=newDraft(8);scheduleSave();render();}return;}
-  if(name==='confirm-new'){closeDialog();const next=clone(state);next.draft=newDraft(8);await commit(next,'新しい下書きを作成しました。');return;}
+  if(name==='edit-race'){showRaceEditor();return;}
+  if(name==='finish-race-editor'){closeDialog();await action('save-race');return;}
+  if(name==='new-race'){if(state.draft.horses.some(h=>h.raw!=='')||state.draft.name){confirmAction('新しいレースを入力','現在の下書きを新しいレースに切り替えます。確定保存した予想は残ります。','confirm-new');}else{state.draft=newDraft(8);scheduleSave();render();showRaceEditor();}return;}
+  if(name==='confirm-new'){closeDialog();const next=clone(state);next.draft=newDraft(8);await commit(next,'新しい下書きを作成しました。');showRaceEditor();return;}
   if(name==='add-horse'||name==='remove-horse'){
     const d=state.draft;if(name==='add-horse'&&d.horses.length<18){const used=new Set(d.horses.map(h=>h.number));d.horses.push(newHorse(Array.from({length:18},(_,i)=>i+1).find(n=>!used.has(n))));}
     if(name==='remove-horse'&&d.horses.length>4){const h=d.horses[d.horses.length-1];if(h.raw||h.name){confirmAction('最後の馬を外す',`${h.number}番の入力を下書きから外します。`,'confirm-remove-horse',h.id);return;}removeHorse(h.id);}
     scheduleSave();render();return;
   }
   if(name==='confirm-remove-horse'){closeDialog();removeHorse(id);scheduleSave();render();return;}
-  if(name==='select-pair'){state.draft.selectedPartner=id;scheduleSave();render();return;}
-  if(name==='use-stake'){const p=projectDraft(state.draft,state.settings,bankroll(state),state.model).pairs.find(p=>p.partnerId===state.draft.selectedPartner);if(!p)return;state.draft.decision='bet';state.draft.stake=String(p.amount);scheduleSave();render();$('actual-stake')?.focus();return;}
+  if(name==='select-axis'){const d=state.draft;if(!d.horses.some(h=>h.id===id))return;d.axisId=id;if(d.selectedPartner===id)d.selectedPartner='';scheduleSave();render();return;}
+  if(name==='select-pair'){showPairDetails(id);return;}
+  if(name==='record-pair'){
+    const d=state.draft,q=projectDraft(d,state.settings,bankroll(state),state.model).pairs.find(q=>q.partnerId===id);if(!q||!Number.isFinite(q.odds)||q.odds<=0)throw new Error('実オッズを入力してください。');
+    d.selectedPartner=id;d.decision='bet';d.stake=$('sheet-stake').value;scheduleSave();closeDialog();render();await action('save-race');return;
+  }
   if(name==='save-race'){
+    if(!state.draft.name.trim()){showRaceEditor(true);return;}
     const p=projectDraft(state.draft,state.settings,bankroll(state),state.model),errors=validateDraft(state.draft,p);if(errors.length)throw new Error(errors.join('\n'));
     const race=createRace(state.draft,p,state.settings,bankroll(state),state.model),next=clone(state);next.races=upsertRace(next.races,race);next.draft=newDraft(state.draft.horses.length);await commit(next,'予想時点の全馬の数値を保存しました。');navigate('history');return;
   }
@@ -218,10 +265,10 @@ async function action(name,id,el) {
 function removeHorse(id){const d=state.draft;d.horses=d.horses.filter(h=>h.id!==id);delete d.odds[id];if(d.axisId===id)d.axisId='';if(d.selectedPartner===id)d.selectedPartner='';}
 function handleValue(el) {
   const d=state.draft;
-  if(el.dataset.field){d[el.dataset.field]=el.value;if(el.dataset.field==='selectedPartner'&&d.stake===''){const p=projectDraft(d,state.settings,bankroll(state),state.model).pairs.find(p=>p.partnerId===d.selectedPartner);if(p)d.stake=String(p.amount);}scheduleSave();render();}
-  else if(el.dataset.horse){const h=d.horses.find(h=>h.id===el.dataset.horse);if(!h)return;h[el.dataset.key]=el.dataset.key==='number'&&el.value!==''?Number(el.value):el.value;scheduleSave();render();}
+  if(el.dataset.field){d[el.dataset.field]=el.value;if(el.dataset.field==='selectedPartner'&&d.stake===''){const p=projectDraft(d,state.settings,bankroll(state),state.model).pairs.find(p=>p.partnerId===d.selectedPartner);if(p)d.stake=String(p.amount);}scheduleSave();if(['mode','decision','selectedPartner'].includes(el.dataset.field))render();else refreshPrediction();}
+  else if(el.dataset.horse){const h=d.horses.find(h=>h.id===el.dataset.horse);if(!h)return;h[el.dataset.key]=el.dataset.key==='number'&&el.value!==''?Number(el.value):el.value;scheduleSave();refreshPrediction();}
   else if(el.dataset.axis){d.axisId=el.dataset.axis;if(d.selectedPartner===d.axisId)d.selectedPartner='';scheduleSave();render();}
-  else if(el.dataset.odds){d.odds[el.dataset.odds]=el.value;scheduleSave();render();}
+  else if(el.dataset.odds){d.odds[el.dataset.odds]=el.value;scheduleSave();refreshPrediction();}
   else if(el.dataset.ui){if(el.dataset.ui==='historyFilter')historyFilter=el.value;else historySearch=el.value;render();}
   else if(el.dataset.analysis){analysisOptions[el.dataset.analysis]=el.value;render();}
   else if(el.dataset.result==='void'){resultDraft.voidRace=el.checked;resultDirty=true;render();}
