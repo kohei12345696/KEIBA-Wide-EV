@@ -1,0 +1,613 @@
+{
+  "sourceCommit": "8d2a86b97edd899f0e78b427bbe015ab7861046a",
+  "sourceBlob": "a336f17599e4eff6fa913de9196078c59e6b8063",
+  "sourceLine": 795,
+  "executedOriginalFunction": true,
+  "records": [
+    {
+      "name": "normal8",
+      "input": [
+        "80",
+        "40",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.8000000000000002,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.29090909090909106,
+      "required": 4.124999999999997,
+      "ev": 1.4545454545454553,
+      "kelly": 0.056818181818181906,
+      "bet": 5600,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "29.1",
+        "probabilityDetail": "29.09",
+        "requiredTable": "4.1",
+        "requiredDetail": "4.12",
+        "evTable": "1.45",
+        "evDetail": "1.455"
+      }
+    },
+    {
+      "name": "scaled8",
+      "input": [
+        "40",
+        "20",
+        "15",
+        "15",
+        "15",
+        "15",
+        "15",
+        "15"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.8000000000000002,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.29090909090909106,
+      "required": 4.124999999999997,
+      "ev": 1.4545454545454553,
+      "kelly": 0.056818181818181906,
+      "bet": 5600,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "29.1",
+        "probabilityDetail": "29.09",
+        "requiredTable": "4.1",
+        "requiredDetail": "4.12",
+        "evTable": "1.45",
+        "evDetail": "1.455"
+      }
+    },
+    {
+      "name": "axisReversed",
+      "input": [
+        "80",
+        "40",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30"
+      ],
+      "axis": 1,
+      "partner": 0,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.8000000000000002,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.24615384615384625,
+      "required": 4.874999999999998,
+      "ev": 1.2307692307692313,
+      "kelly": 0.02884615384615391,
+      "bet": 2800,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "24.6",
+        "probabilityDetail": "24.62",
+        "requiredTable": "4.9",
+        "requiredDetail": "4.87",
+        "evTable": "1.23",
+        "evDetail": "1.231"
+      }
+    },
+    {
+      "name": "equal6",
+      "input": [
+        "50",
+        "50",
+        "50",
+        "50",
+        "50",
+        "50"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 6,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "wide": 0.2,
+      "required": 5.999999999999999,
+      "ev": 1.2000000000000002,
+      "kelly": 0.020000000000000018,
+      "bet": 2000,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "20.0",
+        "probabilityDetail": "20.00",
+        "requiredTable": "6.0",
+        "requiredDetail": "6.00",
+        "evTable": "1.20",
+        "evDetail": "1.200"
+      }
+    },
+    {
+      "name": "equal18",
+      "input": [
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 40,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663,
+        0.16666666666666663
+      ],
+      "wide": 0.01960784313725489,
+      "required": 61.20000000000003,
+      "ev": 0.7843137254901956,
+      "kelly": 0,
+      "bet": 0,
+      "recommended": false,
+      "display": {
+        "probabilityTable": "2.0",
+        "probabilityDetail": "1.96",
+        "requiredTable": "61.2",
+        "requiredDetail": "61.20",
+        "evTable": "0.78",
+        "evDetail": "0.784"
+      }
+    },
+    {
+      "name": "blankNegativeInvalid",
+      "input": [
+        "80",
+        "",
+        "-5",
+        "abc",
+        "40",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30"
+      ],
+      "axis": 0,
+      "partner": 4,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.8000000000000002,
+        0,
+        0,
+        0,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.29090909090909106,
+      "required": 4.124999999999997,
+      "ev": 1.4545454545454553,
+      "kelly": 0.056818181818181906,
+      "bet": 5600,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "29.1",
+        "probabilityDetail": "29.09",
+        "requiredTable": "4.1",
+        "requiredDetail": "4.12",
+        "evTable": "1.45",
+        "evDetail": "1.455"
+      }
+    },
+    {
+      "name": "allZero",
+      "input": [
+        "",
+        "",
+        "0"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0,
+        0,
+        0
+      ],
+      "wide": 0,
+      "required": 999,
+      "ev": null,
+      "kelly": 0,
+      "bet": 0,
+      "recommended": false,
+      "display": {
+        "probabilityTable": "0.0",
+        "probabilityDetail": "0.00",
+        "requiredTable": "999.0",
+        "requiredDetail": "999.00",
+        "evTable": null,
+        "evDetail": null
+      }
+    },
+    {
+      "name": "over100AfterNormalization",
+      "input": [
+        "90",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10",
+        "10"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        1.6874999999999993,
+        0.18749999999999994,
+        0.18749999999999994,
+        0.18749999999999994,
+        0.18749999999999994,
+        0.18749999999999994,
+        0.18749999999999994,
+        0.18749999999999994
+      ],
+      "wide": 0.48214285714285654,
+      "required": 2.488888888888892,
+      "ev": 2.410714285714283,
+      "kelly": 0.17633928571428537,
+      "bet": 17600,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "48.2",
+        "probabilityDetail": "48.21",
+        "requiredTable": "2.5",
+        "requiredDetail": "2.49",
+        "evTable": "2.41",
+        "evDetail": "2.411"
+      }
+    },
+    {
+      "name": "oddsOne",
+      "input": [
+        "50",
+        "50",
+        "50",
+        "50",
+        "50",
+        "50"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 1,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "wide": 0.2,
+      "required": 5.999999999999999,
+      "ev": 0.2,
+      "kelly": 0,
+      "bet": 0,
+      "recommended": false,
+      "display": {
+        "probabilityTable": "20.0",
+        "probabilityDetail": "20.00",
+        "requiredTable": "6.0",
+        "requiredDetail": "6.00",
+        "evTable": "0.20",
+        "evDetail": "0.200"
+      }
+    },
+    {
+      "name": "nonDefaultThreshold",
+      "input": [
+        "50",
+        "50",
+        "50",
+        "50",
+        "50",
+        "50"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 6,
+      "bankroll": 100000,
+      "threshold": 1.5,
+      "fraction": 0.5,
+      "normalized": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "wide": 0.2,
+      "required": 7.5,
+      "ev": 1.2000000000000002,
+      "kelly": 0.020000000000000018,
+      "bet": 2000,
+      "recommended": false,
+      "display": {
+        "probabilityTable": "20.0",
+        "probabilityDetail": "20.00",
+        "requiredTable": "7.5",
+        "requiredDetail": "7.50",
+        "evTable": "1.20",
+        "evDetail": "1.200"
+      }
+    },
+    {
+      "name": "fullKelly",
+      "input": [
+        "80",
+        "40",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 1,
+      "normalized": [
+        0.8000000000000002,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.29090909090909106,
+      "required": 4.124999999999997,
+      "ev": 1.4545454545454553,
+      "kelly": 0.11363636363636381,
+      "bet": 11300,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "29.1",
+        "probabilityDetail": "29.09",
+        "requiredTable": "4.1",
+        "requiredDetail": "4.12",
+        "evTable": "1.45",
+        "evDetail": "1.455"
+      }
+    },
+    {
+      "name": "quarterKelly",
+      "input": [
+        "80",
+        "40",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30",
+        "30"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 5,
+      "bankroll": 100000,
+      "threshold": 1.2,
+      "fraction": 0.25,
+      "normalized": [
+        0.8000000000000002,
+        0.4000000000000001,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004,
+        0.30000000000000004
+      ],
+      "wide": 0.29090909090909106,
+      "required": 4.124999999999997,
+      "ev": 1.4545454545454553,
+      "kelly": 0.028409090909090953,
+      "bet": 2800,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "29.1",
+        "probabilityDetail": "29.09",
+        "requiredTable": "4.1",
+        "requiredDetail": "4.12",
+        "evTable": "1.45",
+        "evDetail": "1.455"
+      }
+    },
+    {
+      "name": "hundredYenRoundDown",
+      "input": [
+        "50",
+        "50",
+        "50",
+        "50",
+        "50",
+        "50"
+      ],
+      "axis": 0,
+      "partner": 1,
+      "odds": 6,
+      "bankroll": 12345,
+      "threshold": 1.2,
+      "fraction": 0.5,
+      "normalized": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ],
+      "wide": 0.2,
+      "required": 5.999999999999999,
+      "ev": 1.2000000000000002,
+      "kelly": 0.020000000000000018,
+      "bet": 200,
+      "recommended": true,
+      "display": {
+        "probabilityTable": "20.0",
+        "probabilityDetail": "20.00",
+        "requiredTable": "6.0",
+        "requiredDetail": "6.00",
+        "evTable": "1.20",
+        "evDetail": "1.200"
+      }
+    }
+  ],
+  "checks": [
+    [
+      "normalWide",
+      true
+    ],
+    [
+      "scaleInvariant",
+      true
+    ],
+    [
+      "axisNonSymmetric",
+      true
+    ],
+    [
+      "equal6",
+      true
+    ],
+    [
+      "zeroSentinel",
+      true
+    ],
+    [
+      "overOnePreserved",
+      true
+    ],
+    [
+      "oddsOneStake",
+      true
+    ],
+    [
+      "thresholdParam",
+      true
+    ],
+    [
+      "stakes",
+      true
+    ],
+    [
+      "minimumRoundDown",
+      true
+    ],
+    [
+      "invalidInputsBecomeZero",
+      true
+    ]
+  ]
+}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#164e3b">
+  <meta name="description" content="全馬の複勝率を記録し、ワイドの期待値と予想精度を確かめる個人用レースノート。">
+  <title>Wide EV — 予想と記録</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <aside class="sidebar" aria-label="メインメニュー">
+    <a class="brand" href="#predict"><img src="./icon.svg" width="38" height="38" alt=""><span>Wide EV<small>予想と記録</small></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <nav id="navigation"></nav>
+    <div class="sidebar-bottom"><div class="local-dot"></div><strong>この端末に保存</strong><p>記録は送信されません。<br>設定からバックアップできます。</p><a href="../" target="_blank" rel="noopener">旧サイトを開く <span aria-hidden="true">↗</span></a></div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><a class="mobile-brand" href="#predict">Wide EV<span>予想と記録</span></a><div class="breadcrumb">RACE NOTE <span>/</span> <strong id="breadcrumb">レース予想</strong></div><div id="save-status" class="save-status" role="status">読み込み中</div></header>
+    <div id="storage-warning" role="alert"></div>
+    <main id="main" tabindex="-1"><div class="loading"><div class="loading-mark"></div><p>記録を読み込んでいます</p></div></main>
+    <footer class="footer">Wide EV <span>従来の計算式を継承</span><a href="./docs/guide.html" target="_blank" rel="noopener">使い方・検証方法</a></footer>
+  </div>
+  <nav id="mobile-navigation" class="mobile-nav" aria-label="モバイルメニュー"></nav>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <input id="import-file" type="file" accept=".json,application/json" hidden>
+  <dialog id="confirm-dialog"><div id="dialog-content"></div></dialog>
+  <noscript><p class="noscript">このサイトを使うにはJavaScriptを有効にしてください。</p></noscript>
+</body>
+</html>
