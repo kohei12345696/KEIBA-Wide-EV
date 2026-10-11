@@ -1,0 +1,160 @@
+/* Keep intrinsic table and native form widths inside their grid tracks. */
+html { width: 100%; }
+body, .workspace { min-width: 0; }
+main { width: 100%; min-width: 0; }
+.grid-two > *, .result-grid > *, .settings-grid > *,
+.chart-layout > *, .stat-grid > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.panel, .table-scroll { min-width: 0; max-width: 100%; }
+.page-heading > *, .panel-header > *, .field { min-width: 0; }
+.field input, .field select, .field textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.field input[type=checkbox], .field input[type=radio] { width: 17px; }
+.filters > .field { min-width: 0; }
+.filters input, .filters select { min-width: 0; flex: none; }
+.analysis-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+input[type=date], input[type=time] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-inline-size: 0;
+  max-width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input::-webkit-date-and-time-value { text-align: left; min-height: 1.5em; }
+.stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.chart-note, .calc-settings, .race-tags { flex-wrap: wrap; }
+.race-tags { display: flex; gap: 5px; margin-top: 8px; }
+.calc-axis strong, .detail-line > *, .sidebar-stat { overflow-wrap: anywhere; }
+.detail-line { gap: 10px; }
+.guide { min-width: 0; width: 100%; }
+.guide table { table-layout: fixed; white-space: normal; }
+.guide th, .guide td { overflow-wrap: anywhere; }
+
+@media (min-width: 1280px) {
+  .analysis-filters { grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 990px) {
+  .grid-two, .result-grid, .settings-grid, .chart-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .page-heading { flex-direction: column; align-items: stretch; }
+  .page-heading p { max-width: none; }
+  .heading-actions { padding-top: 0; }
+  .panel-header { flex-wrap: wrap; }
+  .count-control { gap: 8px; flex-shrink: 0; }
+  .race-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .analysis-filters { grid-template-columns: minmax(0, 1fr); }
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field input, .field select, .field textarea, .mode-row select,
+  .role-select, .filters select, .result-table select, .horse-no,
+  .odds-input, .prob-input { font-size: 16px; }
+  .mode-row label { width: 100%; flex-direction: column; align-items: stretch; }
+  .mode-row select { width: 100%; max-width: 100%; min-width: 0; }
+  .table-foot { flex-wrap: wrap; }
+  .track-options button { min-width: 0; white-space: normal; }
+  .mobile-nav a { min-width: 0; flex: 1; padding-inline: 5px; }
+  .footer { flex-wrap: wrap; }
+
+  /* One horse per card: all controls remain visible without horizontal zoom. */
+  .horse-table, .horse-table.with-margin, .calc-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    white-space: normal;
+  }
+  .horse-table thead, .calc-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .horse-table tbody, .calc-table tbody {
+    display: grid;
+    gap: 10px;
+    padding: 12px;
+    width: 100%;
+  }
+  .horse-table tbody tr, .calc-table tbody tr {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 12px;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .horse-table td, .horse-table td:first-child, .horse-table td:last-child,
+  .calc-table td, .calc-table td:first-child, .calc-table td:last-child {
+    display: block;
+    padding: 0;
+    min-width: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+  }
+  .horse-table td[data-label]::before, .calc-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 5px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .horse-table td.axis-cell {
+    position: absolute;
+    inset: 12px auto auto 10px;
+    width: 32px;
+    text-align: center;
+  }
+  .horse-table .axis-cell input { width: 20px; height: 20px; margin: 0; }
+  .horse-table td.horse-cell { grid-column: 1 / -1; padding-left: 40px; }
+  .horse-table .horse-name { min-width: 0; width: 100%; }
+  .horse-table .horse-name input:not(.horse-no) {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    padding: 10px 4px;
+    font-size: 16px;
+  }
+  .horse-table .horse-no { flex: 0 0 38px; width: 38px; height: 44px; font-size: 16px; }
+  .horse-table .percent-unit { display: flex; align-items: center; gap: 5px; margin: 0; }
+  .horse-table .prob-input { flex: 1; min-width: 0; width: 100%; min-height: 44px; }
+  .horse-table .role-select { min-width: 0; width: 100%; max-width: 100%; min-height: 44px; }
+  .horse-table td.norm-cell { font-size: 20px; align-self: end; }
+  .horse-table:not(.with-margin) .role-cell { grid-column: 1 / -1; }
+  .calc-table td.pair-cell { grid-column: 1 / -1; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .calc-table .pair-label { width: 100%; min-width: 0; padding: 5px 0; background: none; color: var(--green); text-align: left; font-size: 15px; font-weight: 600; }
+  .calc-table .pair-label span { min-width: 0; overflow-wrap: anywhere; }
+  .calc-table td { font-size: 17px; }
+  .calc-table .odds-input { min-width: 0; width: 100%; min-height: 44px; font-size: 16px; }
+  .calc-table .ev-pill { font-size: 18px; }
+  .chart-layout .result-table { min-width: 0; table-layout: fixed; white-space: normal; }
+  .chart-layout .result-table th, .chart-layout .result-table td { padding: 10px 6px; white-space: normal; font-size: 11px; overflow-wrap: anywhere; }
+}
+
+@media (max-width: 380px) {
+  .race-meta { grid-template-columns: minmax(0, 1fr); }
+  .race-meta > .field:first-child { grid-column: auto; }
+  .calc-title { flex-wrap: wrap; gap: 8px; }
+  .calc-axis { flex-wrap: wrap; }
+}
